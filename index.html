@@ -1,12 +1,44 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <script src="https://d3js.org/d3.v6.min.js"></script>
-        <script src="index.js"></script>
-    </head>
-    <body>
-        <p>
-            Hello!
-        </p>
-    </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script src="//d3js.org/d3-scale-chromatic.v0.3.min.js"></script>
+
+        <script src= 
+        "https://d3js.org/d3-color.v1.min.js"> 
+    </script>
+        <script defer src="./index.js"></script>
+        <style>
+            body {
+                font-family: Sans-serif;
+                font-size: 11px;
+            }
+    
+            .slice {
+                cursor: pointer;
+            }
+    
+            .slice .main-arc {
+                stroke: #fff;
+                stroke-width: 1px;
+            }
+    
+            .slice .hidden-arc {
+                fill: none;
+            }
+    
+            .slice text {
+                pointer-events: none;
+                dominant-baseline: middle;
+                text-anchor: middle;
+            }
+        </style>
+    
+</head>
+<body>
+    
+</body>
 </html>
