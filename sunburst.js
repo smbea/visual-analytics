@@ -61,6 +61,11 @@ const sunburstSVG = d3.select('#sunburst-chart').append('svg')
     .on('click', () => focusOn()); // Reset zoom on canvas click
 
 
+function createSunburstVisualization(data){
+    let root = prepareSunburst(data);
+    initializeBreadcrumbTrail(root)
+    createVisualization(root);
+} 
 
 function createVisualization(root) {
 
