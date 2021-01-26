@@ -1,47 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-        <script src="https://d3js.org/d3.v4.min.js"></script>
-        <script src="//d3js.org/d3-scale-chromatic.v0.3.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="//d3js.org/d3-scale-chromatic.v0.3.min.js"></script>
 
-        <script src= 
-        "https://d3js.org/d3-color.v1.min.js"> 
+    <script src="https://d3js.org/d3-color.v1.min.js">
     </script>
-        <script defer src="./main.js"></script>
-        <script defer src="./sunburst.js"></script>
+    <script defer src="./main.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <script defer src="./sunburst.js"></script>
 
-        <style>
-            body {
-                font-family: Sans-serif;
-                font-size: 11px;
-            }
-    
-            .slice {
-                cursor: pointer;
-            }
-    
-            .slice .main-arc {
-                stroke: #fff;
-                stroke-width: 1px;
-            }
-    
-            .slice .hidden-arc {
-                fill: none;
-            }
-    
-            .slice text {
-                pointer-events: none;
-                dominant-baseline: middle;
-                text-anchor: middle;
-            }
-        </style>
-    
+    <style>
+        body {
+            font-family: Sans-serif;
+            font-size: 11px;
+        }
+
+        .slice {
+            cursor: pointer;
+        }
+
+        .slice .main-arc {
+            stroke: #fff;
+            stroke-width: 1px;
+        }
+
+        .slice .hidden-arc {
+            fill: none;
+        }
+
+        .slice text {
+            pointer-events: none;
+            dominant-baseline: middle;
+            text-anchor: middle;
+        }
+
+        .bubbles {
+            stroke-width: 1.5px;
+            stroke: white;
+        }
+
+        .bubbles:hover {
+            stroke: black;
+        }
+    </style>
+
 </head>
+
 <body>
-    <div id="sequence"></div>
-    <div id="chart"></div>
+    <div class="d-flex flex-row  justify-content-center">
+        <div id="sunburst" >
+            <div id="sunburst-chart" class="m-4"></div>
+            <div id="sequence" class="mt-4"></div>
+        </div>
+        <div class="d-flex flex-column align-items-start m-4" id="bubble" style="position: relative;">
+            <div id="bubble-chart"></div>
+
+            <div id="legend"></div>
+        </div>
+    </div>
 </body>
+
 </html>

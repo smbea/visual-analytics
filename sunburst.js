@@ -1,14 +1,14 @@
 var b = {
-    w: 120, h: 30, s: 3, t: 10
+    w: 100, h: 30, s: 3, t: 10
 };
 
 const totalSize = 6820
-const levels = ["All", "Category", "Score", "Country"]
+const levels = ["All", "Genre", "Score", "Country"]
 const depth = levels.length - 1
 
-const width = 500,
-    height = 500,
-    maxRadius = (Math.min(width, height) / 2) - 5;
+const sWidth = 500,
+    sHeight = 500,
+    maxRadius = (Math.min(sWidth, sHeight) / 2) - 5;
 
 const formatNumber = d3.format(',d');
 
@@ -54,18 +54,19 @@ const textFits = d => {
 
 };
 
-const svg = d3.select('#chart').append('svg')
-    .style('width', '70vw')
-    .style('height', '70vh')
-    .attr('viewBox', `${-width / 2} ${-height / 2} ${width} ${height}`)
+const sunburstSVG = d3.select('#sunburst-chart').append('svg')
+    .style('width', sWidth)
+    .style('height', sWidth)
+    .attr('viewBox', `${-sWidth / 2} ${-sHeight / 2} ${sWidth} ${sHeight}`)
     .on('click', () => focusOn()); // Reset zoom on canvas click
+
 
 
 function createVisualization(root) {
 
     root.sum(d => d.size);
 
-    const slice = svg.selectAll('g.slice')
+    const slice = sunburstSVG.selectAll('g.slice')
         .data(partition(root).descendants())
 
 
@@ -124,7 +125,7 @@ function focusOn(d = { x0: 0, x1: 1, y0: 0, y1: 1 }) {
     }
     updateBreadcrumbs(sequenceArray, percentageString)
 
-    const transition = svg.transition()
+    const transition = sunburstSVG.transition()
         .duration(750)
         .tween('scale', () => {
             const xd = d3.interpolate(x.domain(), [d.x0, d.x1]),
@@ -146,12 +147,14 @@ function focusOn(d = { x0: 0, x1: 1, y0: 0, y1: 1 }) {
     //
 
     function moveStackToFront(elD) {
-        svg.selectAll('.slice').filter(d => d === elD)
+        sunburstSVG.selectAll('.slice').filter(d => d === elD)
             .each(function (d) {
                 this.parentNode.appendChild(this);
                 if (d.parent) { moveStackToFront(d.parent); }
             })
     }
+
+    console.log(d)
 }
 
 
@@ -162,9 +165,9 @@ function prepareSunburst(data) {
         .key(function (d) {
             let roundedScore = Math.round(d.score)
             if (roundedScore <= 4) {
-                return "0-4"
+                return "0-5"
             } else if (roundedScore <= 7) {
-                return "0-7"
+                return "5-7"
             } else return "8-10"
         })
         .key(function (d) { return d.country; })
@@ -189,7 +192,7 @@ function nest(name, data, depth, maxDepth) {
 
 function initializeBreadcrumbTrail(root) {
     var trail = d3.select("#sequence").append("svg:svg")
-        .attr("width", "70vw")
+        .attr("width", sWidth)
         .attr("height", 50)
         .attr("id", "trail");
     // Add the label at the end, for the percentage.
@@ -202,12 +205,7 @@ function initializeBreadcrumbTrail(root) {
 
 function updateBreadcrumbs(nodeArray, percentageString) {
 
-    let label 
 
-    if (nodeArray.length > 1) {
-        let reverseDepth = depth - nodeArray[nodeArray.length - 1].height
-        label = levels[reverseDepth] + ": "
-    } else label = ""
 
     // Data join; key function combines name and depth (= position in sequence).
     var trail = d3.select("#trail")
@@ -229,7 +227,16 @@ function updateBreadcrumbs(nodeArray, percentageString) {
         .attr("y", b.h / 2)
         .attr("dy", "0.35em")
         .attr("text-anchor", "middle")
-        .text(function (d) { return label +d.data.name; });
+        .text(function (d) {
+            let label
+
+            if (nodeArray.length > 1) {
+                let reverseDepth = depth - d.height
+                label = levels[reverseDepth] + ": "
+            } else label = ""
+
+            return label + d.data.name;
+        });
 
     // Merge enter and update selections; set position for all nodes.
     entering.merge(trail).attr("transform", function (d, i) {
@@ -238,7 +245,7 @@ function updateBreadcrumbs(nodeArray, percentageString) {
 
     // Now move and update the percentage at the end.
     d3.select("#trail").select("#endlabel")
-        .attr("x", (nodeArray.length + 0.5) * (b.w + b.s))
+        .attr("x", (nodeArray.length + 0.3) * (b.w + b.s))
         .attr("y", b.h / 2)
         .attr("dy", "0.35em")
         .attr("text-anchor", "middle")
