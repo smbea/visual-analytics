@@ -45,7 +45,7 @@ var b_z = d3.scaleLinear()
 // Add X axi
 // Add a scale for bubble color
 var myColor = d3.scaleOrdinal()
-    .domain(["Action", "Comedy", "Adventure", "Drama", "Crime", "Horror"])
+    .domain(["action", "comedy", "adventure", "drama", "crime", "horror"])
     .range(d3.schemeSet2);
 
 var tooltip = d3.select("#bubble-chart")
@@ -106,17 +106,16 @@ function createBubbleVizualization(data) {
         .style("font-size", 10)
         .attr('alignment-baseline', 'middle')
 
-    makeChart()
+    makeChart(currentData)
 
 }
 
 
-function makeChart() {
-    console.log("updating")
+function makeChart(data) {
 
     svg.append('g')
         .selectAll("dot")
-        .data(currentData)
+        .data(data)
         .enter()
         .append("circle")
         .attr("class", "bubbles")
@@ -131,86 +130,98 @@ function makeChart() {
 }
 
 function updateChart(labels, names) {
+    let newData = currentData
 
-    if (names.length == 0) {
-        let oldList = currentData
+    if (state.depth >= labels.length) {
+        console.log("here1")
+        console.log(state.depth, labels.length)
 
         currentData = unchangeableData
-        console.log(currentData)
-        svg.selectAll("dot")
-            .data(currentData.filter(function (d, i) {
-                return oldList.indexOf(d) >= 0
-            }))
-            .enter()
-            .append("circle")
-            .attr("class", "bubbles")
-            .attr("cx", function (d) { return b_x(d.gross); })
-            .attr("cy", function (d) { return b_y(d.score); })
-            .attr("r", function (d) { return b_z(d.budget); })
-            .style("fill", function (d) { return myColor(d.genre) })
-            .on("mouseover", showTooltip)
-            .on("mousemove", moveTooltip)
-            .on("mouseleave", hideTooltip)
+        let tempData = state.unchangeableData.filter(function (d, i) {
+            return currentData.indexOf(d) >= 0
+        })
+
+        console.log(tempData.length)
+
+        newData = filter(labels, names, tempData)
+        makeChart(newData)
+    
     }
 
-    if (names.length == 1) {
+    else if (state.depth < labels.length) {
+        console.log("here2")
+        console.log(state.depth, labels.length)
+
+
+        newData = filter(labels, names, newData)
+
         svg.selectAll("circle").filter(function (d) {
-            return (d[labels[0]] != names[0]);
+            return newData.indexOf(d) < 0
         }).remove()
     }
 
-    if (names.length == 2) {
+    state.depth = labels.length
+    state.data = newData
+
+}
+
+function filter(labels, names, newData){
+    if (labels.length == 1) {
+        newData = newData.filter(function (d) {
+            return (d[labels[0]] == names[0]);
+        })
+    }else if(labels.length == 2) {
         let scoreArray = names[1].split('-');
-        svg.selectAll("circle").filter(function (d) {
-            return (d[labels[0]] != names[0] || (d[labels[1]] >= scoreArray[1] || d[labels[1]] <= scoreArray[0]));
-        }).remove()
+        newData = newData.filter(function (d) {
+            return (d[labels[0]] == names[0] && (d[labels[1]] <= scoreArray[1] && d[labels[1]] >= scoreArray[0]))
+        })
+    }else if(labels.length == 3) {
+        let scoreArray = names[1].split('-');
+        newData = newData.filter(function (d) {
+            return (d[labels[2]] == names[2] && d[labels[0]] == names[0] && (d[labels[1]] <= scoreArray[1] && d[labels[1]] >= scoreArray[0]))
+        })
     }
 
-    if (names.length == 3) {
-        let scoreArray = names[1].split('-');
-        svg.selectAll("circle").filter(function (d) {
-            return (d[labels[2]] != names[2] || d[labels[0]] != names[0] || (d[labels[1]] >= scoreArray[1] || d[labels[1]] <= scoreArray[0]));
-        }).remove()
+    return newData
+}
+
+function updateBubble(labels, names) {
+    console.log(labels)
+    console.log(names)
+    if (currentData) {
+        updateChart(labels, names)
     }
 }
 
-    function updateBubble(labels, names) {
-        console.log(labels)
-        console.log(names)
-        if (currentData) {
-            updateChart(labels, names)
-        }
-    }
 
 
+var showTooltip = function (d) {
+    tooltip
+        .transition()
+        .duration(200)
+    tooltip
+        .style("opacity", 1)
+        .html(
+            "Title: " + d.name + "<br/>" +
+            "Genre: " + d.genre + "<br/>" +
+            "Country: " + d.country + "<br/>" +
+            "Year: " + d.year + "<br/>" +
+            "Budget: " + d.budget + "€<br/>" +
+            "Gross: " + d.gross + "€<br/>" +
+            "Score: " + d.score
+        )
+        .style("left", (d3.mouse(this)[0] + 30) + "px")
+        .style("top", (d3.mouse(this)[1] + 30) + "px")
+}
+var moveTooltip = function (d) {
 
-    var showTooltip = function (d) {
-        tooltip
-            .transition()
-            .duration(200)
-        tooltip
-            .style("opacity", 1)
-            .html(
-                "Title: " + d.name + "<br/>" +
-                "Genre: " + d.genre + "<br/>" +
-                "Country: " + d.country + "<br/>" +
-                "Year: " + d.year + "<br/>" +
-                "Budget: " + d.budget + "€<br/>" +
-                "Gross: " + d.gross + "€<br/>" +
-                "Score: " + d.score
-            )
-            .style("left", (d3.mouse(this)[0] + 30) + "px")
-            .style("top", (d3.mouse(this)[1] + 30) + "px")
-    }
-    var moveTooltip = function (d) {
-
-        tooltip
-            .style("left", (d3.mouse(this)[0] + 30) + "px")
-            .style("top", (d3.mouse(this)[1] + 30) + "px")
-    }
-    var hideTooltip = function (d) {
-        tooltip
-            .transition()
-            .duration(200)
-            .style("opacity", 0)
-    }
+    tooltip
+        .style("left", (d3.mouse(this)[0] + 30) + "px")
+        .style("top", (d3.mouse(this)[1] + 30) + "px")
+}
+var hideTooltip = function (d) {
+    tooltip
+        .transition()
+        .duration(200)
+        .style("opacity", 0)
+}

@@ -1,12 +1,21 @@
+let state = {
+    depth:0,
+    data:null,
+    unchangeableData:null
+}
+
 
 //Read the data
-d3.csv("./dataset.csv", function (data) {
+d3.csv("./pca.csv", function (data) {
 
-    createSunburstVisualization(data);
+    state.unchangeableData = data.filter(function (d) { return d.budget > 35000000 && d.gross < 381000000 && d.gross > 1500000 })
+    state.data = state.unchangeableData
 
-    createBubbleVizualization(data)
+    createSunburstVisualization(state.data);
 
-    initMovieList(data)
+    createBubbleVizualization(state.data)
+
+    initMovieList(state.data)
 })
 
 
@@ -76,46 +85,4 @@ function getCard(data) {
         .html(function (d) { return d.name + "-" + d.genre + "-" + d.country})
 
     console.log(temp)
-}
-
-
-if (names.length == 0) {
-    let oldList = currentData
-
-    currentData = unchangeableData
-    console.log(currentData)
-    svg.selectAll("dot")
-        .data(currentData.filter(function (d, i) {
-            return oldList.indexOf(d) >= 0
-        }))
-        .enter()
-        .append("circle")
-        .attr("class", "bubbles")
-        .attr("cx", function (d) { return b_x(d.gross); })
-        .attr("cy", function (d) { return b_y(d.score); })
-        .attr("r", function (d) { return b_z(d.budget); })
-        .style("fill", function (d) { return myColor(d.genre) })
-        .on("mouseover", showTooltip)
-        .on("mousemove", moveTooltip)
-        .on("mouseleave", hideTooltip)
-}
-
-if (names.length == 1) {
-    svg.selectAll("circle").filter(function (d) {
-        return (d[labels[0]] != names[0]);
-    }).remove()
-}
-
-if (names.length == 2) {
-    let scoreArray = names[1].split('-');
-    svg.selectAll("circle").filter(function (d) {
-        return (d[labels[0]] != names[0] || (d[labels[1]] >= scoreArray[1] || d[labels[1]] <= scoreArray[0]));
-    }).remove()
-}
-
-if (names.length == 3) {
-    let scoreArray = names[1].split('-');
-    svg.selectAll("circle").filter(function (d) {
-        return (d[labels[2]] != names[2] || d[labels[0]] != names[0] || (d[labels[1]] >= scoreArray[1] || d[labels[1]] <= scoreArray[0]));
-    }).remove()
 }
