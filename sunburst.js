@@ -63,11 +63,13 @@ const sunburstSVG = d3.select('#sunburst-chart').append('svg')
 
 function createSunburstVisualization(data) {
     let root = prepareSunburst(data);
+    console.log(root)
     initializeBreadcrumbTrail(root)
     createVisualization(root);
 }
 
 function createVisualization(root) {
+
 
     root.sum(d => d.size);
 
@@ -118,6 +120,7 @@ function createVisualization(root) {
 }
 
 function focusOn(d = { x0: 0, x1: 1, y0: 0, y1: 1 }) {
+    
 
     // Reset to top-level if no data point specified
     var sequenceArray = d.ancestors().reverse();
@@ -225,7 +228,6 @@ function updateBreadcrumbs(nodeArray, percentageString) {
         .style("fill", function (d) { return color(d.data.name); });
 
 
-    console.log(nodeArray[0])
     for (let i= 0; i<nodeArray.length; i++){
         node = nodeArray[i]
         let reverseDepth = depth - node.height
@@ -272,8 +274,7 @@ function updateBreadcrumbs(nodeArray, percentageString) {
     d3.select("#trail")
         .style("visibility", "");
 
-    updateBubble(labels, values)
-    updateList(labels, values)
+    updateData(labels, values)
 
 }
 

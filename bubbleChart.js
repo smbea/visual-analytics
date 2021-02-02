@@ -57,14 +57,8 @@ var tooltip = d3.select("#bubble-chart")
     .style("padding", "10px")
     .style("color", "white")
 
-let unchangeableData
-let currentData
-let previousData
 
 function createBubbleVizualization(data) {
-    let filteredData = data.filter(function (d) { return d.budget > 35000000 && d.gross < 381000000 && d.gross > 1500000 })
-    unchangeableData = filteredData
-    currentData = filteredData
 
     var legendsvg = d3.select("#legend")
         .append("svg")
@@ -106,7 +100,7 @@ function createBubbleVizualization(data) {
         .style("font-size", 10)
         .attr('alignment-baseline', 'middle')
 
-    makeChart(currentData)
+    makeChart(data)
 
 }
 
@@ -129,67 +123,24 @@ function makeChart(data) {
 
 }
 
-function updateChart(labels, names) {
-    let newData = currentData
+function updateChart(newData, replace) {
 
-    if (state.depth >= labels.length) {
-        console.log("here1")
-        console.log(state.depth, labels.length)
-
-        currentData = unchangeableData
-        let tempData = state.unchangeableData.filter(function (d, i) {
-            return currentData.indexOf(d) >= 0
-        })
-
-        console.log(tempData.length)
-
-        newData = filter(labels, names, tempData)
+    if (replace) {
         makeChart(newData)
-    
     }
 
-    else if (state.depth < labels.length) {
-        console.log("here2")
-        console.log(state.depth, labels.length)
-
-
-        newData = filter(labels, names, newData)
-
+    else {
         svg.selectAll("circle").filter(function (d) {
             return newData.indexOf(d) < 0
         }).remove()
     }
 
-    state.depth = labels.length
-    state.data = newData
-
 }
 
-function filter(labels, names, newData){
-    if (labels.length == 1) {
-        newData = newData.filter(function (d) {
-            return (d[labels[0]] == names[0]);
-        })
-    }else if(labels.length == 2) {
-        let scoreArray = names[1].split('-');
-        newData = newData.filter(function (d) {
-            return (d[labels[0]] == names[0] && (d[labels[1]] <= scoreArray[1] && d[labels[1]] >= scoreArray[0]))
-        })
-    }else if(labels.length == 3) {
-        let scoreArray = names[1].split('-');
-        newData = newData.filter(function (d) {
-            return (d[labels[2]] == names[2] && d[labels[0]] == names[0] && (d[labels[1]] <= scoreArray[1] && d[labels[1]] >= scoreArray[0]))
-        })
-    }
 
-    return newData
-}
-
-function updateBubble(labels, names) {
-    console.log(labels)
-    console.log(names)
-    if (currentData) {
-        updateChart(labels, names)
+function updateBubble(newData, replace) {
+    if (state.data) {
+        updateChart(newData, replace)
     }
 }
 
