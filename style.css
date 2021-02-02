@@ -1,0 +1,8 @@
+.card{
+    width: 40rem;
+}
+
+#movies-list{
+    max-height: 30rem;
+    overflow: scroll;
+}

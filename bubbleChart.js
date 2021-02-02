@@ -5,14 +5,13 @@ var margin = { top: 10, right: 20, bottom: 30, left: 50 },
 
 
 var size = d3.scaleSqrt()
-    .domain([1, 35000000])  // What's in the data, let's say it is percentage
+    .domain([1, 50000000])  // What's in the data, let's say it is percentage
     .range([1, 20])  // Size in pixe
 
-var valuesToShow = [350000, 10000000, 35000000]
+var valuesToShow = [3500000, 15000000, 50000000]
 var xCircle = 50
 var xLabel = 100
 var yCircle = 50
-
 
 // append the svg object to the body of the page
 var svg = d3.select("#bubble-chart")
@@ -24,34 +23,48 @@ var svg = d3.select("#bubble-chart")
     .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")")
 
+var b_x = d3.scaleLinear()
+    .domain([0, 381000000])
+    .range([0, width]);
+svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(b_x))
 
+// Add Y axis
+var b_y = d3.scaleLinear()
+    .domain([1, 10])
+    .range([height, 0]);
+svg.append("g")
+    .call(d3.axisLeft(b_y));
+
+// Add a scale for bubble size
+var b_z = d3.scaleLinear()
+    .domain([0, 50000000])
+    .range([1, 3]);
+
+// Add X axi
+// Add a scale for bubble color
+var myColor = d3.scaleOrdinal()
+    .domain(["Action", "Comedy", "Adventure", "Drama", "Crime", "Horror"])
+    .range(d3.schemeSet2);
+
+var tooltip = d3.select("#bubble-chart")
+    .append("div")
+    .style("opacity", 0)
+    .attr("class", "tooltip")
+    .style("background-color", "black")
+    .style("border-radius", "5px")
+    .style("padding", "10px")
+    .style("color", "white")
+
+let unchangeableData
+let currentData
+let previousData
 
 function createBubbleVizualization(data) {
-
-    var x = d3.scaleLinear()
-        .domain([0, 381000000])
-        .range([0, width]);
-    svg.append("g")
-    .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x))
-
-    // Add Y axis
-    var y= d3.scaleLinear()
-        .domain([1, 10])
-        .range([height, 0]);
-    svg.append("g")
-        .call(d3.axisLeft(y));
-
-    // Add a scale for bubble size
-    var z = d3.scaleLinear()
-        .domain([0, 35000000])
-        .range([1, 3]);
-    // Add X axi
-    // Add a scale for bubble color
-    var myColor = d3.scaleOrdinal()
-        .domain(["Action", "Comedy", "Adventure", "Drama", "Crime", "Horror"])
-        .range(d3.schemeSet2);
-
+    let filteredData = data.filter(function (d) { return d.budget > 35000000 && d.gross < 381000000 && d.gross > 1500000 })
+    unchangeableData = filteredData
+    currentData = filteredData
 
     var legendsvg = d3.select("#legend")
         .append("svg")
@@ -93,18 +106,85 @@ function createBubbleVizualization(data) {
         .style("font-size", 10)
         .attr('alignment-baseline', 'middle')
 
+    makeChart()
 
-    var tooltip = d3.select("#bubble-chart")
-        .append("div")
-        .style("opacity", 0)
-        .attr("class", "tooltip")
-        .style("background-color", "black")
-        .style("border-radius", "5px")
-        .style("padding", "10px")
-        .style("color", "white")
+}
+
+
+function makeChart() {
+    console.log("updating")
+
+    svg.append('g')
+        .selectAll("dot")
+        .data(currentData)
+        .enter()
+        .append("circle")
+        .attr("class", "bubbles")
+        .attr("cx", function (d) { return b_x(d.gross); })
+        .attr("cy", function (d) { return b_y(d.score); })
+        .attr("r", function (d) { return b_z(d.budget); })
+        .style("fill", function (d) { return myColor(d.genre) })
+        .on("mouseover", showTooltip)
+        .on("mousemove", moveTooltip)
+        .on("mouseleave", hideTooltip)
+
+}
+
+function updateChart(labels, names) {
+
+    if (names.length == 0) {
+        let oldList = currentData
+
+        currentData = unchangeableData
+        console.log(currentData)
+        svg.selectAll("dot")
+            .data(currentData.filter(function (d, i) {
+                return oldList.indexOf(d) >= 0
+            }))
+            .enter()
+            .append("circle")
+            .attr("class", "bubbles")
+            .attr("cx", function (d) { return b_x(d.gross); })
+            .attr("cy", function (d) { return b_y(d.score); })
+            .attr("r", function (d) { return b_z(d.budget); })
+            .style("fill", function (d) { return myColor(d.genre) })
+            .on("mouseover", showTooltip)
+            .on("mousemove", moveTooltip)
+            .on("mouseleave", hideTooltip)
+    }
+
+    if (names.length == 1) {
+        svg.selectAll("circle").filter(function (d) {
+            return (d[labels[0]] != names[0]);
+        }).remove()
+    }
+
+    if (names.length == 2) {
+        let scoreArray = names[1].split('-');
+        svg.selectAll("circle").filter(function (d) {
+            return (d[labels[0]] != names[0] || (d[labels[1]] >= scoreArray[1] || d[labels[1]] <= scoreArray[0]));
+        }).remove()
+    }
+
+    if (names.length == 3) {
+        let scoreArray = names[1].split('-');
+        svg.selectAll("circle").filter(function (d) {
+            return (d[labels[2]] != names[2] || d[labels[0]] != names[0] || (d[labels[1]] >= scoreArray[1] || d[labels[1]] <= scoreArray[0]));
+        }).remove()
+    }
+}
+
+    function updateBubble(labels, names) {
+        console.log(labels)
+        console.log(names)
+        if (currentData) {
+            updateChart(labels, names)
+        }
+    }
+
+
 
     var showTooltip = function (d) {
-        console.log(d3.mouse(this))
         tooltip
             .transition()
             .duration(200)
@@ -123,7 +203,6 @@ function createBubbleVizualization(data) {
             .style("top", (d3.mouse(this)[1] + 30) + "px")
     }
     var moveTooltip = function (d) {
-        console.log(d3.mouse(this))
 
         tooltip
             .style("left", (d3.mouse(this)[0] + 30) + "px")
@@ -135,23 +214,3 @@ function createBubbleVizualization(data) {
             .duration(200)
             .style("opacity", 0)
     }
-
-    // Add dots
-    svg.append('g')
-        .selectAll("dot")
-        .data(data)
-        .enter()
-        .append("circle")
-        .attr("class", "bubbles")
-        .attr("cx", function (d) { return x(d.gross); })
-        .attr("cy", function (d) { return y(d.score); })
-        .attr("r", function (d) { return z(d.budget); })
-        .style("fill", function (d) { return myColor(d.genre)})
-        .on("mouseover", showTooltip)
-        .on("mousemove", moveTooltip)
-        .on("mouseleave", hideTooltip)
-
-
-
-
-}

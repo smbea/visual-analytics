@@ -3,7 +3,7 @@ var b = {
 };
 
 const totalSize = 6820
-const levels = ["All", "Genre", "Score", "Country"]
+const levels = ["All", "genre", "score", "country"]
 const depth = levels.length - 1
 
 const sWidth = 500,
@@ -61,11 +61,11 @@ const sunburstSVG = d3.select('#sunburst-chart').append('svg')
     .on('click', () => focusOn()); // Reset zoom on canvas click
 
 
-function createSunburstVisualization(data){
+function createSunburstVisualization(data) {
     let root = prepareSunburst(data);
     initializeBreadcrumbTrail(root)
     createVisualization(root);
-} 
+}
 
 function createVisualization(root) {
 
@@ -120,7 +120,6 @@ function createVisualization(root) {
 function focusOn(d = { x0: 0, x1: 1, y0: 0, y1: 1 }) {
 
     // Reset to top-level if no data point specified
-
     var sequenceArray = d.ancestors().reverse();
     //sequenceArray.shift(); // remove root node from the array
     var percentage = (100 * d.value / totalSize).toPrecision(3);
@@ -158,10 +157,7 @@ function focusOn(d = { x0: 0, x1: 1, y0: 0, y1: 1 }) {
                 if (d.parent) { moveStackToFront(d.parent); }
             })
     }
-
-    console.log(d)
 }
-
 
 function prepareSunburst(data) {
 
@@ -210,7 +206,8 @@ function initializeBreadcrumbTrail(root) {
 
 function updateBreadcrumbs(nodeArray, percentageString) {
 
-
+    let labels = []
+    let values = []
 
     // Data join; key function combines name and depth (= position in sequence).
     var trail = d3.select("#trail")
@@ -227,6 +224,20 @@ function updateBreadcrumbs(nodeArray, percentageString) {
         .attr("points", breadcrumbPoints)
         .style("fill", function (d) { return color(d.data.name); });
 
+
+    console.log(nodeArray[0])
+    for (let i= 0; i<nodeArray.length; i++){
+        node = nodeArray[i]
+        let reverseDepth = depth - node.height
+
+        if (reverseDepth > 0) {
+            label = levels[reverseDepth]
+            labels.push(label)
+            values.push(node.data.name)
+        } 
+
+    }
+
     entering.append("svg:text")
         .attr("x", (b.w + b.t) / 2)
         .attr("y", b.h / 2)
@@ -237,7 +248,8 @@ function updateBreadcrumbs(nodeArray, percentageString) {
 
             if (nodeArray.length > 1) {
                 let reverseDepth = depth - d.height
-                label = levels[reverseDepth] + ": "
+                label = levels[reverseDepth]
+                label = label + ": "
             } else label = ""
 
             return label + d.data.name;
@@ -259,6 +271,9 @@ function updateBreadcrumbs(nodeArray, percentageString) {
     // Make the breadcrumb trail visible, if it's hidden.
     d3.select("#trail")
         .style("visibility", "");
+
+    updateBubble(labels, values)
+    updateList(labels, values)
 
 }
 
