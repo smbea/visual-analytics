@@ -7,7 +7,7 @@ let state = {
 
 
 //Read the data
-d3.csv("./pca_3.csv", function (data) {
+d3.csv("./pca_4.csv", function (data) {
 
     state.unchangeableData = data.filter(function (d) { 
         return d.budget > 35000000 && d.gross < 381000000 && d.gross > 1500000 

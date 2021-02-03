@@ -1,5 +1,5 @@
 let previous = null
-
+var s_tooltip
 const allRanges = document.querySelectorAll(".range-wrap");
 allRanges.forEach(wrap => {
     const range = wrap.querySelector(".range");
@@ -42,11 +42,21 @@ function initScatterplot(data) {
     // append the svg object to the body of the page
     s_svg = d3.select("#similarity-scatterplot")
         .append("svg")
+        .style("position", "relative")
         .attr("width", s_width + s_margin.left + s_margin.right)
         .attr("height", s_height + s_margin.top + s_margin.bottom)
         .append("g")
         .attr("transform",
             "translate(" + s_margin.left + "," + s_margin.top + ")");
+
+             s_tooltip = d3.select("#similarity-scatterplot")
+            .append("div")
+            .style("opacity", 0)
+            .style("position","absolute")
+            .style("background-color", "black")
+            .style("border-radius", "5px")
+            .style("padding", "10px")
+            .style("color", "white")
 
 
     // Color scale: give me a specie name, I return a color
@@ -72,13 +82,17 @@ function updateScatterplotData(data) {
         .data(newData)
         .enter()
         .append("circle")
-        .attr("class", "bubbles")
+        .attr("class", function (d) { return `bubbles ${d.Segment}` })
         .style("visibility", "hidden")
         .attr("cx", function (d) { return s_x(d.Component2); })
         .attr("cy", function (d) { return s_y(d.Component1); })
         .attr("r", 5)
         .style("visibility", "initial")
         .style("fill", function (d) { return s_color(d.Segment) })
+        .on("mouseover", showSTooltip)
+        .on("mousemove", moveSTooltip)
+        .on("mouseleave", hideSTooltip)
+       
 }
 
 function initAxis(data) {
@@ -88,7 +102,7 @@ function initAxis(data) {
         .range([0, s_width]);
     s_svg.append("g")
         .attr("transform", "translate(0," + s_height + ")")
-        //.style("visibility", "hidden" )
+        .style("visibility", "hidden" )
         .call(d3.axisBottom(s_x));
 
     // Add s_y axis
@@ -96,8 +110,9 @@ function initAxis(data) {
         .domain(d3.extent(data, function (d) { return +d.Component1; }))
         .range([s_height, 0]);
     s_svg.append("g")
-        //.style("visibility", "hidden" )
+        .style("visibility", "hidden" )
         .call(d3.axisLeft(s_y));
+    
 }
 
 function updateAxis(data) {
@@ -109,7 +124,7 @@ function updateAxis(data) {
         .range([0, s_width]);
     s_svg.append("g")
         .attr("transform", "translate(0," + s_height + ")")
-        //.style("visibility", "hidden" )
+        .style("visibility", "hidden" )
         .call(d3.axisBottom(s_x));
 
     // Add s_y axis
@@ -117,7 +132,7 @@ function updateAxis(data) {
         .domain(d3.extent(data, function (d) { return +d.Component1; }))
         .range([s_height, 0]);
     s_svg.append("g")
-        //.style("visibility", "hidden" )
+        .style("visibility", "hidden" )
         .call(d3.axisLeft(s_y));
 }
 
@@ -129,9 +144,81 @@ function updateSimilarity(val) {
         })
         console.log("have result")
 
-        d3.selectAll("circle").remove()
+        s_svg.selectAll("circle").remove()
         updateAxis(newData)
         updateScatterplotData(newData)
         previous = newData
     })
+}
+
+var onMouseOver = function(d){
+    console.log(d)
+    highlight(d)
+    showTooltip(d)
+}
+
+
+function highlight(d){
+    console.log(d)
+
+    selected_specie = d.Segment
+    console.log(selected_specie)
+
+    s_svg.selectAll("circle")
+      .transition()
+      .duration(200)
+      .style("fill", "lightgrey")
+      .attr("r", 3)
+
+      s_svg.selectAll("." + selected_specie)
+      .transition()
+      .duration(200)
+      .style("fill", function (d) { return s_color(d.Segment) })
+      .attr("r", 6)
+  }
+
+  // Highlight the specie that is hovered
+  var doNotHighlight = function(){
+    s_svg.selectAll("circle")
+      .transition()
+      .duration(200)
+      .style("fill", function (d) { return s_color(d.Segment) })
+      .attr("r", 5 )
+  }
+
+var showSTooltip = function(d) {
+    console.log(d)
+
+    s_tooltip
+        .transition()
+        .duration(200)
+        s_tooltip
+        .style("opacity", 1)
+        .html(
+            "Title: " + d.name + "<br/>" +
+            "Genre: " + d.genre + "<br/>" +
+            "Country: " + d.country + "<br/>" +
+            "Year: " + d.year + "<br/>" +
+            "Budget: " + d.budget + "€<br/>" +
+            "Gross: " + d.gross + "€<br/>" +
+            "Score: " + d.score + "€<br/>" +
+            "Votes:" + d.votes
+        )
+        .style("left", (d3.mouse(this)[0] + 30) + "px")
+        .style("top", (d3.mouse(this)[1] + 30) + "px")
+    highlight(d)
+}
+var moveSTooltip = function (d) {
+
+    s_tooltip
+        .style("left", (d3.mouse(this)[0] + 30) + "px")
+        .style("top", (d3.mouse(this)[1] + 30) + "px")
+}
+var hideSTooltip = function (d) {
+    s_tooltip
+        .transition()
+        .duration(200)
+        .style("opacity", 0)
+
+    doNotHighlight(d)
 }
