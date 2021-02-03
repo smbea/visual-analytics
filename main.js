@@ -14,10 +14,11 @@ d3.csv("./pca_4.csv", function (data) {
     })
 
     state.data = state.unchangeableData
+    initScatterplot(state.unchangeableData)
+
     createSunburstVisualization(state.unchangeableData);
     createBubbleVizualization(state.unchangeableData)
     initMovieList(state.unchangeableData)
-    initScatterplot(state.unchangeableData)
 })
 
 
@@ -36,14 +37,17 @@ function updateData(labels, names){
 
     else if (state.depth < labels.length) {
         newData = filter(labels, names, newData)
+        state.data = newData
+
     }
 
     state.depth = labels.length
-    state.data = newData
+    //state.data = newData
     updateBubble(newData, replace)
 
     updateList(newData, replace)
 
+    updateScatterData(newData, replace)
     return newData
 }
 

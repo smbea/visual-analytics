@@ -192,14 +192,15 @@ function setAxis(data) {
 }
 
 function updateChart(newData, replace) {
+    let data = [...newData]
 
     if (replace) {
-        makeChart(newData)
+        makeChart(data)
     }
 
     else {
         svg.selectAll("circle").filter(function (d) {
-            return newData.indexOf(d) < 0
+            return data.indexOf(d) < 0
         }).remove()
     }
 
@@ -250,9 +251,9 @@ var hideTooltip = function (d) {
 function selectBubble(name){
     console.log(name)
 
-    //Array.from(document.getElementsByName(name)).forEach(element => {
-      //  element.setAttribute("class", "bubbles-hover")
-    //});
+    Array.from(document.getElementsByName(name)).forEach(element => {
+       element.setAttribute("class", "bubbles-hover")
+    });
 
 }
 
@@ -260,7 +261,7 @@ deselectBubble
 
 function deselectBubble(name){
     console.log(name)
-    /*Array.from(document.getElementsByName(name)).forEach(element => {
+    Array.from(document.getElementsByName(name)).forEach(element => {
         element.setAttribute("class", "bubbles-left-hover")
-    });*/
+    });
 }

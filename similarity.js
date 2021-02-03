@@ -61,10 +61,42 @@ function initScatterplot(data) {
 
     // Color scale: give me a specie name, I return a color
     initAxis(data)
-    updateScatterplotData(data)
+    let newd = [...data]
+    updateScatterplotData(newd)
 
 
 }
+
+function updateScatterData(newData, replace) {
+    let data = [...newData]
+
+    if (replace) {
+        
+        s_svg.append('g')
+        .selectAll("dot")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("class", function (d) { return `bubbles ${d.Segment}` })
+        .style("visibility", "hidden")
+        .attr("cx", function (d) { return s_x(d.Component2); })
+        .attr("cy", function (d) { return s_y(d.Component1); })
+        .attr("r", 5)
+        .style("visibility", "initial")
+        .style("fill", function (d) { return s_color(d.Segment) })
+        .on("mouseover", showSTooltip)
+        .on("mousemove", moveSTooltip)
+        .on("mouseleave", hideSTooltip)
+    }
+
+    else {
+        s_svg.selectAll("circle").filter(function (d) {
+            return data.indexOf(d) < 0
+        }).remove()
+    }
+
+}
+
 
 function updateScatterplotData(data) {
 
@@ -217,3 +249,4 @@ var hideSTooltip = function (d) {
 
     doNotHighlight(d)
 }
+

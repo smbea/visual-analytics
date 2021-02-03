@@ -53,11 +53,10 @@ var dosmth = () => {
 }
 async function updateList(newData, replace) {
 
-    console.log(newData)
-
+    let data = [...newData]
     if (replace) {
 
-        makeList(newData)
+        makeList(data)
         let array = document.getElementsByClassName("card")
         Array.from(array).forEach(element => {
             element.onmouseover = function () {
@@ -71,7 +70,7 @@ async function updateList(newData, replace) {
 
     else {
         d3.selectAll(".card").filter(function (d) {
-            return newData.indexOf(d) < 0
+            return data.indexOf(d) < 0
         }).remove()
     }
 }
