@@ -1,5 +1,70 @@
+body {
+    font-family: Sans-serif;
+    font-size: 11px;
+}
+
+.slice {
+    cursor: pointer;
+}
+
+.slice .main-arc {
+    stroke: #fff;
+    stroke-width: 1px;
+}
+
+.slice .hidden-arc {
+    fill: none;
+}
+
+.slice text {
+    pointer-events: none;
+    dominant-baseline: middle;
+    text-anchor: middle;
+}
+
+.bubbles {
+    stroke-width: 1.2px;
+    stroke: white;
+    opacity: 0.9;
+}
+
+.bubbles:hover {
+    stroke: black;
+}
+
 #movies-list{
     max-height: 30rem;
     overflow: scroll;
     width: 40rem;
 }
+
+.range-wrap {
+    position: relative;
+    margin: 0 auto 3rem;
+  }
+  .range {
+    width: 100%;
+  }
+  .bubble {
+    background: rgb(0, 153, 255);
+    color: white;
+    padding: 4px 12px;
+    position: absolute;
+    border-radius: 4px;
+    left: 50%;
+    margin-top: 1.5em;
+    transform: translateX(-50%);
+  }
+  .bubble::after {
+    content: "";
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: rgb(0, 153, 255);
+    top: -1px;
+    left: 50%;
+  }
+  
+  body {
+    margin: 2rem;
+  }

@@ -15,41 +15,9 @@
         integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
     <script defer src="./sunburst.js"></script>
     <script defer src="./bubbleChart.js"></script>
+    <script defer src="./movieList.js"></script>
+    <script defer src="./similarity.js"></script>
     <link rel="stylesheet" href="style.css">
-    <style>
-        body {
-            font-family: Sans-serif;
-            font-size: 11px;
-        }
-
-        .slice {
-            cursor: pointer;
-        }
-
-        .slice .main-arc {
-            stroke: #fff;
-            stroke-width: 1px;
-        }
-
-        .slice .hidden-arc {
-            fill: none;
-        }
-
-        .slice text {
-            pointer-events: none;
-            dominant-baseline: middle;
-            text-anchor: middle;
-        }
-
-        .bubbles {
-            stroke-width: 1.5px;
-            stroke: white;
-        }
-
-        .bubbles:hover {
-            stroke: black;
-        }
-    </style>
 
 </head>
 
@@ -66,8 +34,16 @@
         </div>
     </div>
 
-    <div>
+    <div class="d-flex flex-row ">
         <div id="movies-list" class="m-4">
+        </div>
+        <div id="similarity" class="m-4">
+            <div id="similarity-scatterplot"></div>
+
+            <div class="range-wrap" style="width: 75%;">
+                <input type="range" class="range" min="2" max="4" step="1">
+                <output class="bubble"></output>
+              </div>
         </div>
     </div>
 </body>

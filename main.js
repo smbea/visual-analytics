@@ -5,8 +5,9 @@ let state = {
 }
 
 
+
 //Read the data
-d3.csv("./pca.csv", function (data) {
+d3.csv("./pca_3.csv", function (data) {
 
     state.unchangeableData = data.filter(function (d) { 
         return d.budget > 35000000 && d.gross < 381000000 && d.gross > 1500000 
@@ -16,23 +17,9 @@ d3.csv("./pca.csv", function (data) {
     createSunburstVisualization(state.unchangeableData);
     createBubbleVizualization(state.unchangeableData)
     initMovieList(state.unchangeableData)
+    initScatterplot(state.unchangeableData)
 })
 
-
-async function initMovieList(data) {
-
-    let pagesNeeded = Math.floor(data.length/50)
-    if(data.length%50 != 0) pagesNeeded+= 1
-    let lowerIndex = 0
-    let higherIndex = 50
-    console.log(pagesNeeded)
-
-
-    return new Promise(() => {
-        getCard(data)
-      });
-
-}
 
 function updateData(labels, names){
     let newData = state.data
@@ -79,34 +66,3 @@ function filter(labels, names, newData){
     return newData
 }
 
-async function updateList(newData, replace){
-
-    d3.select("#movies-list")
-        .selectAll("div").remove()
-
-    d3.select("#movies-list")
-        .selectAll("div")
-        .data(newData)
-        .enter()
-        .append("div")
-        .attr("class", "card")
-        .append("div")
-        .attr("class", "card-body")
-        .html(function (d) { return d.name; })
-}
-
-
-function getCard(data) {
-    console.log(data)
-    let temp = d3.select("#movies-list")
-        .selectAll("div")
-        .data(data)
-        .enter()
-        .append("div")
-        .attr("class", "card")
-        .append("div")
-        .attr("class", "card-body")
-        .html(function (d) { return d.name + "-" + d.genre + "-" + d.country})
-
-    console.log(temp)
-}

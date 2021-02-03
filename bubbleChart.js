@@ -4,11 +4,9 @@ var margin = { top: 10, right: 20, bottom: 30, left: 50 },
     height = 500 - margin.top - margin.bottom;
 
 
-var size = d3.scaleSqrt()
-    .domain([1, 50000000])  // What's in the data, let's say it is percentage
-    .range([1, 20])  // Size in pixe
+var size
 
-var valuesToShow = [3500000, 15000000, 50000000]
+var valuesToShow
 var xCircle = 50
 var xLabel = 100
 var yCircle = 50
@@ -23,24 +21,9 @@ var svg = d3.select("#bubble-chart")
     .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")")
 
-var b_x = d3.scaleLinear()
-    .domain([0, 381000000])
-    .range([0, width]);
-svg.append("g")
-    .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(b_x))
-
-// Add Y axis
-var b_y = d3.scaleLinear()
-    .domain([1, 10])
-    .range([height, 0]);
-svg.append("g")
-    .call(d3.axisLeft(b_y));
-
-// Add a scale for bubble size
-var b_z = d3.scaleLinear()
-    .domain([0, 50000000])
-    .range([1, 3]);
+var b_x
+var b_y
+var b_z
 
 // Add X axi
 // Add a scale for bubble color
@@ -60,10 +43,17 @@ var tooltip = d3.select("#bubble-chart")
 
 function createBubbleVizualization(data) {
 
+    setAxis(data)
+
+    d3.select("#legend").append("text")
+    .text("Votes")
+    .style("margin-left","5em");
+
     var legendsvg = d3.select("#legend")
         .append("svg")
         .attr("width", 150)
-        .attr("height", 70)
+        .attr("height", 70
+        )
 
     legendsvg.selectAll("legend")
         .data(valuesToShow)
@@ -96,9 +86,10 @@ function createBubbleVizualization(data) {
         .append("text")
         .attr('x', xLabel)
         .attr('y', function (d) { return yCircle - size(d) })
-        .text(function (d) { return (d / 1000000 + "M €") })
+        .text(function (d) { return (d / 1000 + "k") })
         .style("font-size", 10)
         .attr('alignment-baseline', 'middle')
+
 
     makeChart(data)
 
@@ -113,13 +104,55 @@ function makeChart(data) {
         .enter()
         .append("circle")
         .attr("class", "bubbles")
-        .attr("cx", function (d) { return b_x(d.gross); })
-        .attr("cy", function (d) { return b_y(d.score); })
-        .attr("r", function (d) { return b_z(d.budget); })
+        .attr("cx", function (d) { return b_x(d.gross / 100000); })
+        .attr("cy", function (d) { return b_y(d.budget / 100000); })
+        .attr("r", function (d) { return b_z(d.votes); })
         .style("fill", function (d) { return myColor(d.genre) })
         .on("mouseover", showTooltip)
         .on("mousemove", moveTooltip)
         .on("mouseleave", hideTooltip)
+
+
+}
+
+function setAxis(data) {
+    b_x = d3.scaleLinear()
+        .domain(d3.extent(data, function (d) { return +d.gross / 100000; }))
+        .range([0, width]);
+    svg.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(b_x))
+
+    svg.append("text")
+        .attr("transform",
+            "translate(" + (width / 2) + " ," +
+            (height + margin.top + 20) + ")")
+        .style("text-anchor", "middle")
+        .text("Gross Earnings (Millions)");
+
+    b_y = d3.scaleLinear()
+        .domain(d3.extent(data, function (d) { return +d.budget / 100000; }))
+        .range([height, 0]);
+    svg.append("g")
+        .call(d3.axisLeft(b_y));
+
+    svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left)
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Budget (Millions)");
+
+    b_z = d3.scaleLinear()
+        .domain(d3.extent(data, function (d) { return +d.votes; }))
+        .range([1.5, 25]);
+
+    size = d3.scaleSqrt()
+        .domain(d3.extent(data, function (d) { return +d.votes; }))  // What's in the data, let's say it is percentage
+        .range([1.5, 25])  // Size in pixe
+
+    valuesToShow = [50000, 500000, 1600000]
 
 }
 
@@ -159,7 +192,8 @@ var showTooltip = function (d) {
             "Year: " + d.year + "<br/>" +
             "Budget: " + d.budget + "€<br/>" +
             "Gross: " + d.gross + "€<br/>" +
-            "Score: " + d.score
+            "Score: " + d.score + "€<br/>" +
+            "Votes:" + d.votes
         )
         .style("left", (d3.mouse(this)[0] + 30) + "px")
         .style("top", (d3.mouse(this)[1] + 30) + "px")
