@@ -1,7 +1,38 @@
 body {
     font-family: Sans-serif;
     font-size: 11px;
+    background-color: rgb(247, 247, 247);
 }
+
+.title{
+  font-size: 35px;
+  margin-bottom: 15px;
+}
+
+
+#sunburst{
+  background-color: rgba(255, 255, 255, 0.829);
+  border-radius: 2%;
+  padding: 0 30px;
+  box-shadow: 1px 1px 15px rgba(197, 197, 197, 0.288);
+
+}
+
+#movies-list{
+  background-color: rgba(255, 255, 255, 0.829);
+  border-radius: 2%;
+  padding:0 10px 10px 10px !important;
+  box-shadow: 1px 1px 15px rgba(197, 197, 197, 0.288);
+}
+
+#bubble-area{
+  background-color: rgba(255, 255, 255, 0.829);
+  border-radius: 2%;
+  padding: 10px 20px 0 20px;
+  box-shadow: 1px 1px 15px rgba(197, 197, 197, 0.288);
+}
+
+
 
 .slice {
     cursor: pointer;
@@ -23,8 +54,16 @@ body {
 }
 
 .bubbles {
-    stroke-width: 1.2px;
+    stroke-width: 1.1px;
     stroke: white;
+}
+
+.bubbles-hover {
+  stroke: black !important;
+}
+
+.bubbles-left-hover {
+  stroke: white !important;
 }
 
 .bubbles:hover {
@@ -32,14 +71,12 @@ body {
 }
 
 #movies-list{
-    max-height: 30rem;
-    overflow: scroll;
-    width: 40rem;
+    padding: 0 10em;
 }
 
 .range-wrap {
     position: relative;
-    margin: 0 auto 3rem;
+    margin: 0 auto 2.5em;
   }
   .range {
     width: 100%;
@@ -75,3 +112,31 @@ body {
     display: inline-block;
     margin-right: 5px;
   }
+
+  .card{
+    padding: 1em;
+    width: 45em;
+    margin-bottom: 0.5em;
+    box-shadow: 1px 1px 5px rgba(228, 228, 228, 0.39);
+  }
+
+  hr{
+    margin: 0.5em;
+  }
+
+  .card-title{
+    font-size: 15px;
+    margin-bottom: 0;
+  }
+
+  .card-body{
+    padding: 0;
+  }
+
+  #movie-cards{
+    max-height: 30rem;
+    overflow: scroll;
+    background-color: rgb(247, 247, 247);
+    padding: 1em 1em;
+  }
+  

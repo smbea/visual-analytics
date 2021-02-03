@@ -1,7 +1,7 @@
 // set the dimensions and margins of the graph
 var margin = { top: 10, right: 20, bottom: 30, left: 50 },
     width = 650 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    height = 400 - margin.top - margin.bottom;
 
 
 var size
@@ -30,7 +30,7 @@ var b_z
 // Add a scale for bubble color
 var myColor = d3.scaleOrdinal()
     .domain(allgroups)
-    .range(d3.schemeSet3);
+    .range(["#8dd3c7","#edd74a","#a69edb","#fb8072","#80b1d3","#fdb462","#b3de69","#dea4c2","#a8a8a8","#bc80bd","#9dbf95","#e07d53"]);
 
 var tooltip = d3.select("#bubble-chart")
     .append("div")
@@ -53,7 +53,7 @@ function createBubbleVizualization(data) {
     var legendsvg = d3.select("#legend")
         .append("svg")
         .attr("width", 150)
-        .attr("height", 70
+        .attr("height", 60
         )
 
     legendsvg.selectAll("legend")
@@ -101,7 +101,7 @@ function createBubbleVizualization(data) {
 
     for(let i= 0; i<allgroups.length;i++){
         
-        if(temp>=2){
+        if(temp>=3){
             div = section.append("div").attr("class", "d-flex flex-column")
             temp=0
         }
@@ -141,6 +141,7 @@ function makeChart(data) {
         .attr("cx", function (d) { return b_x(d.gross / 100000); })
         .attr("cy", function (d) { return b_y(d.budget / 100000); })
         .attr("r", function (d) { return b_z(d.votes); })
+        .attr("name", function (d) { return d.name; })
         .style("fill", function (d) { return myColor(d.genre) })
         .on("mouseover", showTooltip)
         .on("mousemove", moveTooltip)
@@ -243,4 +244,23 @@ var hideTooltip = function (d) {
         .transition()
         .duration(200)
         .style("opacity", 0)
+}
+
+
+function selectBubble(name){
+    console.log(name)
+
+    //Array.from(document.getElementsByName(name)).forEach(element => {
+      //  element.setAttribute("class", "bubbles-hover")
+    //});
+
+}
+
+deselectBubble
+
+function deselectBubble(name){
+    console.log(name)
+    /*Array.from(document.getElementsByName(name)).forEach(element => {
+        element.setAttribute("class", "bubbles-left-hover")
+    });*/
 }

@@ -22,32 +22,49 @@
 </head>
 
 <body>
-    <div class="d-flex flex-row  justify-content-center">
+    <div class="title d-flex flex-row  justify-content-center"><span>Movie Analytics</span></div>
+    <div class="d-flex flex-row  justify-content-center mb-1">
         <div id="sunburst">
             <div id="sunburst-chart" class="m-4"></div>
             <div id="sequence" class="mt-4"></div>
         </div>
-        <div class="d-flex flex-column align-items-start m-4" id="bubble" style="position: relative;">
+        <div id="bubble-area" class="d-flex flex-column align-items-start mx-4" id="bubble" style="position: relative;">
             <div id="bubble-chart"></div>
-            <div class="d-flex flex-row  justify-content-center">
-            <div id="legend"></div>
-            <div id="leg" class="m-4"></div>
-        </div>
+            <div class="d-flex flex-row justify-content-center">
+                <div id="legend" class="d-flex flex-column-reverse "></div>
+                <div id="leg" class="m-4"></div>
+            </div>
         </div>
     </div>
 
-    <div class="d-flex flex-row ">
-        <div id="movies-list" class="m-4">
+    <div class="d-flex flex-row justify-content-center">
+        <div id="movies-list" class="mx-3 mt-3 d-flex flex-column align-items-end">
+            <div class="form-group mb-2 d-flex mt-2">
+                <div class="d-flex align-items-center mx-2" style="font-size:small">Sort By:</div>
+                <div>
+                    <select id="select" class="form-control form-control-sm" id="exampleFormControlSelect1">
+                        <option selected value="initial">Initial</option>
+                        <option value="name-asc">Name Ascending</option>
+                        <option value="name-desc">Name Descending</option>
+                        <option value="score-asc">Score Ascending</option>
+                        <option value="score-desc">Score Descending</option>
+                    </select>
+                </div>
+            </div>
+            <div id="movie-cards" class="d-flex flex-column align-items-center"></div>
         </div>
-        <div id="similarity" class="m-4" style="position: relative;">
+        <div id="similarity" class="mx-3 mt-3" style="position: relative;">
+            <div class="my-1" style="font-size: medium;">Similarity Clustering</div>
+            <hr  class="mb-4 mt-2">
             <div id="similarity-scatterplot"></div>
 
             <div class="range-wrap" style="width: 30%;">
                 <input type="range" class="range" min="2" max="5" step="1">
                 <output class="bubble"></output>
-              </div>
+            </div>
         </div>
     </div>
+
 </body>
 
 </html>

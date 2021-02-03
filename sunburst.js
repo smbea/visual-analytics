@@ -6,8 +6,8 @@ const totalSize = 6820
 const levels = ["All", "genre", "score", "country"]
 const depth = levels.length - 1
 
-const sWidth = 500,
-    sHeight = 500,
+const sWidth = 450,
+    sHeight = 400,
     maxRadius = (Math.min(sWidth, sHeight) / 2) - 5;
 
 const formatNumber = d3.format(',d');
@@ -56,7 +56,7 @@ const textFits = d => {
 
 const sunburstSVG = d3.select('#sunburst-chart').append('svg')
     .style('width', sWidth)
-    .style('height', sWidth)
+    .style('height', sHeight)
     .attr('viewBox', `${-sWidth / 2} ${-sHeight / 2} ${sWidth} ${sHeight}`)
     .on('click', () => focusOn()); // Reset zoom on canvas click
 
@@ -168,9 +168,9 @@ function prepareSunburst(data) {
         .key(function (d) { return d.genre; })
         .key(function (d) {
             let roundedScore = Math.round(d.score)
-            if (roundedScore <= 4) {
+            if (roundedScore < 5) {
                 return "0-5"
-            } else if (roundedScore <= 7) {
+            } else if (roundedScore < 7) {
                 return "5-7"
             } else return "8-10"
         })
@@ -274,6 +274,7 @@ function updateBreadcrumbs(nodeArray, percentageString) {
     d3.select("#trail")
         .style("visibility", "");
 
+    console.log(nodeArray)
     updateData(labels, values)
 
 }

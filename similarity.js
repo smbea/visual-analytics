@@ -49,14 +49,14 @@ function initScatterplot(data) {
         .attr("transform",
             "translate(" + s_margin.left + "," + s_margin.top + ")");
 
-             s_tooltip = d3.select("#similarity-scatterplot")
-            .append("div")
-            .style("opacity", 0)
-            .style("position","absolute")
-            .style("background-color", "black")
-            .style("border-radius", "5px")
-            .style("padding", "10px")
-            .style("color", "white")
+    s_tooltip = d3.select("#similarity-scatterplot")
+        .append("div")
+        .style("opacity", 0)
+        .style("position", "absolute")
+        .style("background-color", "black")
+        .style("border-radius", "5px")
+        .style("padding", "10px")
+        .style("color", "white")
 
 
     // Color scale: give me a specie name, I return a color
@@ -70,11 +70,11 @@ function updateScatterplotData(data) {
 
     let newData = data
 
-    if(previous){
-    let newData = data.filter(function (d, i) {
-        return previous.indexOf(d) < 0
-    })
-}
+    if (previous) {
+        let newData = data.filter(function (d, i) {
+            return previous.indexOf(d) < 0
+        })
+    }
 
     // Add dots
     s_svg.append('g')
@@ -92,7 +92,7 @@ function updateScatterplotData(data) {
         .on("mouseover", showSTooltip)
         .on("mousemove", moveSTooltip)
         .on("mouseleave", hideSTooltip)
-       
+
 }
 
 function initAxis(data) {
@@ -102,7 +102,7 @@ function initAxis(data) {
         .range([0, s_width]);
     s_svg.append("g")
         .attr("transform", "translate(0," + s_height + ")")
-        .style("visibility", "hidden" )
+        .style("visibility", "hidden")
         .call(d3.axisBottom(s_x));
 
     // Add s_y axis
@@ -110,9 +110,9 @@ function initAxis(data) {
         .domain(d3.extent(data, function (d) { return +d.Component1; }))
         .range([s_height, 0]);
     s_svg.append("g")
-        .style("visibility", "hidden" )
+        .style("visibility", "hidden")
         .call(d3.axisLeft(s_y));
-    
+
 }
 
 function updateAxis(data) {
@@ -124,7 +124,7 @@ function updateAxis(data) {
         .range([0, s_width]);
     s_svg.append("g")
         .attr("transform", "translate(0," + s_height + ")")
-        .style("visibility", "hidden" )
+        .style("visibility", "hidden")
         .call(d3.axisBottom(s_x));
 
     // Add s_y axis
@@ -132,15 +132,15 @@ function updateAxis(data) {
         .domain(d3.extent(data, function (d) { return +d.Component1; }))
         .range([s_height, 0]);
     s_svg.append("g")
-        .style("visibility", "hidden" )
+        .style("visibility", "hidden")
         .call(d3.axisLeft(s_y));
 }
 
 function updateSimilarity(val) {
     d3.csv(`./pca_${val}.csv`, function (data) {
 
-        let newData = data.filter(function (d) { 
-            return d.budget > 35000000 && d.gross < 381000000 && d.gross > 1500000 
+        let newData = data.filter(function (d) {
+            return d.budget > 35000000 && d.gross < 381000000 && d.gross > 1500000
         })
         console.log("have result")
 
@@ -151,43 +151,46 @@ function updateSimilarity(val) {
     })
 }
 
-var onMouseOver = function(d){
+var onMouseOver = function (d) {
     console.log(d)
     highlight(d)
     showTooltip(d)
 }
 
 
-function highlight(d){
+function highlight(d) {
     console.log(d)
 
     selected_specie = d.Segment
     console.log(selected_specie)
 
     s_svg.selectAll("circle")
-      .transition()
-      .duration(200)
-      .style("fill", "lightgrey")
-      .attr("r", 3)
+        .transition()
+        .duration(200)
+        .style("fill", "lightgrey")
+        .attr("r", 3)
 
-      s_svg.selectAll("." + selected_specie)
-      .transition()
-      .duration(200)
-      .style("fill", function (d) { return s_color(d.Segment) })
-      .attr("r", 6)
-  }
+    console.log(s_svg.selectAll("circle"))
 
-  // Highlight the specie that is hovered
-  var doNotHighlight = function(){
+    s_svg.selectAll("." + selected_specie)
+        .transition()
+        .duration(200)
+        .style("fill", function (d) { return s_color(d.Segment) })
+        .attr("r", 6)
+}
+
+var doNotHighlight = function () {
     s_svg.selectAll("circle")
-      .transition()
-      .duration(200)
-      .style("fill", function (d) { return s_color(d.Segment) })
-      .attr("r", 5 )
-  }
+        .transition()
+        .duration(200)
+        .style("fill", function (d) { return s_color(d.Segment) })
+        .attr("r", 5)
+}
 
-var showSTooltip = function(d) {
+var showSTooltip = function (d) {
     console.log(d)
+
+    highlight(d)
 
     s_tooltip
         .transition()
@@ -195,18 +198,10 @@ var showSTooltip = function(d) {
         s_tooltip
         .style("opacity", 1)
         .html(
-            "Title: " + d.name + "<br/>" +
-            "Genre: " + d.genre + "<br/>" +
-            "Country: " + d.country + "<br/>" +
-            "Year: " + d.year + "<br/>" +
-            "Budget: " + d.budget + "€<br/>" +
-            "Gross: " + d.gross + "€<br/>" +
-            "Score: " + d.score + "€<br/>" +
-            "Votes:" + d.votes
+            "Title: " + d.name
         )
         .style("left", (d3.mouse(this)[0] + 30) + "px")
         .style("top", (d3.mouse(this)[1] + 30) + "px")
-    highlight(d)
 }
 var moveSTooltip = function (d) {
 

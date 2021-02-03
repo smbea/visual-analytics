@@ -41,25 +41,31 @@ function updateData(labels, names){
     state.depth = labels.length
     state.data = newData
     updateBubble(newData, replace)
+
     updateList(newData, replace)
+
     return newData
 }
 
 
 function filter(labels, names, newData){
+
+
     if (labels.length == 1) {
         newData = newData.filter(function (d) {
             return (d[labels[0]] == names[0]);
         })
     }else if(labels.length == 2) {
         let scoreArray = names[1].split('-');
+        let intArray = [parseInt(scoreArray[0]),parseInt(scoreArray[1])]
         newData = newData.filter(function (d) {
-            return (d[labels[0]] == names[0] && (d[labels[1]] <= scoreArray[1] && d[labels[1]] >= scoreArray[0]))
+            return (d[labels[0]] == names[0] && (d[labels[1]] <= intArray[1] && d[labels[1]] >= intArray[0]))
         })
     }else if(labels.length == 3) {
         let scoreArray = names[1].split('-');
+         let intArray = [parseInt(scoreArray[0]),parseInt(scoreArray[1])]
         newData = newData.filter(function (d) {
-            return (d[labels[2]] == names[2] && d[labels[0]] == names[0] && (d[labels[1]] <= scoreArray[1] && d[labels[1]] >= scoreArray[0]))
+            return (d[labels[2]] == names[2] && d[labels[0]] == names[0] && (d[labels[1]] <= intArray[1] && d[labels[1]] >= intArray[0]))
         })
     }
 
