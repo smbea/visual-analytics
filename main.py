@@ -49,7 +49,7 @@ def main():
 
     pca = PCA(n_components=5).fit_transform(X_std)
 
-    kmeans_pca = KMeans(3)
+    kmeans_pca = KMeans(5)
     kmeans_pca.fit(pca)
     df_kmeas = pd.concat([df,pd.DataFrame(pca)], axis=1)
     df_kmeas.columns.values[-5:] = ['Component1', 'Component2', 'Component3', 'Component4', 'Component5']
@@ -64,7 +64,7 @@ def main():
 
     x_axis = df_kmeas['Component1']
     y_axis = df_kmeas['Component2']
-    sns.scatterplot(x_axis, y_axis, hue= df_kmeas['Segment'], palette = ['g','r','c'])
+    sns.scatterplot(x_axis, y_axis, hue= df_kmeas['Segment'])
     #plt.show()
 
     dat = pd.DataFrame(df_kmeas)

@@ -10,6 +10,7 @@ var valuesToShow
 var xCircle = 50
 var xLabel = 100
 var yCircle = 50
+var allgroups = ["Action", "Comedy", "Adventure", "Drama", "Crime", "Horror", "Animation", "Biography", "Mystery", "Sci-Fi","Fantasy","Romance"]
 
 // append the svg object to the body of the page
 var svg = d3.select("#bubble-chart")
@@ -28,8 +29,8 @@ var b_z
 // Add X axi
 // Add a scale for bubble color
 var myColor = d3.scaleOrdinal()
-    .domain(["action", "comedy", "adventure", "drama", "crime", "horror"])
-    .range(d3.schemeSet2);
+    .domain(allgroups)
+    .range(d3.schemeSet3);
 
 var tooltip = d3.select("#bubble-chart")
     .append("div")
@@ -91,7 +92,40 @@ function createBubbleVizualization(data) {
         .attr('alignment-baseline', 'middle')
 
 
+     // Add one dot in the legend for each name.
+    var asize = 20
+    let section = d3.select("#leg").attr("class", "d-flex flex-row align-items-center")
+
+    let div = section.append("div").attr("class", "d-flex flex-column")
+    let temp=0
+
+    for(let i= 0; i<allgroups.length;i++){
+        
+        if(temp>=2){
+            div = section.append("div").attr("class", "d-flex flex-column")
+            temp=0
+        }
+        
+        let newdiv = div.append("div").attr("class", "d-flex flex-row align-items-center")
+        newdiv.append("span")
+        .attr("cx", 0)
+        .attr("cy", 0) // 100 is where the first dot appears. 25 is the distance between dots
+        .attr("r", 7)
+        .attr("class", "dott")
+        .style("background-color", function(){ return myColor(allgroups[i])})
+
+        newdiv.append("text")
+        .attr("cx", 0)
+        .attr("cy", 0) // 100 is where the first dot appears. 25 is the distance between dots
+        .style("color", function(){ return myColor(allgroups[i])})
+        .style("margin-right", "1em")
+        .text(allgroups[i])
+        temp++
+    }
+
+
     makeChart(data)
+
 
 }
 
