@@ -7,7 +7,7 @@ const levels = ["All", "genre", "score", "country"]
 const depth = levels.length - 1
 
 const sWidth = 450,
-    sHeight = 400,
+    sHeight = 300,
     maxRadius = (Math.min(sWidth, sHeight) / 2) - 5;
 
 const formatNumber = d3.format(',d');

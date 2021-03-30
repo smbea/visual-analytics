@@ -82,6 +82,7 @@ function updateScatterData(newData, replace) {
         .attr("cx", function (d) { return s_x(d.Component2); })
         .attr("cy", function (d) { return s_y(d.Component1); })
         .attr("r", 5)
+        .attr("name", function (d) { return d.name; })
         .style("visibility", "initial")
         .style("fill", function (d) { return s_color(d.Segment) })
         .on("mouseover", showSTooltip)
@@ -134,7 +135,6 @@ function initAxis(data) {
         .range([0, s_width]);
     s_svg.append("g")
         .attr("transform", "translate(0," + s_height + ")")
-        .style("visibility", "hidden")
         .call(d3.axisBottom(s_x));
 
     // Add s_y axis
@@ -142,7 +142,6 @@ function initAxis(data) {
         .domain(d3.extent(data, function (d) { return +d.Component1; }))
         .range([s_height, 0]);
     s_svg.append("g")
-        .style("visibility", "hidden")
         .call(d3.axisLeft(s_y));
 
 }
@@ -156,7 +155,6 @@ function updateAxis(data) {
         .range([0, s_width]);
     s_svg.append("g")
         .attr("transform", "translate(0," + s_height + ")")
-        .style("visibility", "hidden")
         .call(d3.axisBottom(s_x));
 
     // Add s_y axis
@@ -164,7 +162,6 @@ function updateAxis(data) {
         .domain(d3.extent(data, function (d) { return +d.Component1; }))
         .range([s_height, 0]);
     s_svg.append("g")
-        .style("visibility", "hidden")
         .call(d3.axisLeft(s_y));
 }
 
