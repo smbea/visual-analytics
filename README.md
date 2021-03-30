@@ -9,6 +9,7 @@ The data used in this project was provided by the ["Movie Industry: Three decade
 
 * Javascript
 * D3.js
+* Python
 * HTML
 * CSS
 
