@@ -13,8 +13,6 @@ d3.csv("./pca_4.csv", function (data) {
         return d.budget > 35000000 && d.gross < 381000000 && d.gross > 1500000 
     })
 
-    console.log(state.unchangeableData.length)
-
     state.data = state.unchangeableData
     initScatterplot(state.unchangeableData)
 

@@ -171,7 +171,6 @@ function updateSimilarity(val) {
         let newData = data.filter(function (d) {
             return d.budget > 35000000 && d.gross < 381000000 && d.gross > 1500000
         })
-        console.log("have result")
 
         s_svg.selectAll("circle").remove()
         updateAxis(newData)
@@ -181,17 +180,14 @@ function updateSimilarity(val) {
 }
 
 var onMouseOver = function (d) {
-    console.log(d)
     highlight(d)
     showTooltip(d)
 }
 
 
 function highlight(d) {
-    console.log(d)
 
     selected_specie = d.Segment
-    console.log(selected_specie)
 
     s_svg.selectAll("circle")
         .transition()
@@ -199,7 +195,6 @@ function highlight(d) {
         .style("fill", "lightgrey")
         .attr("r", 3)
 
-    console.log(s_svg.selectAll("circle"))
 
     s_svg.selectAll("." + selected_specie)
         .transition()
@@ -217,7 +212,6 @@ var doNotHighlight = function () {
 }
 
 var showSTooltip = function (d) {
-    console.log(d)
 
     highlight(d)
 

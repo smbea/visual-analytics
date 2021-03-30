@@ -63,7 +63,6 @@ const sunburstSVG = d3.select('#sunburst-chart').append('svg')
 
 function createSunburstVisualization(data) {
     let root = prepareSunburst(data);
-    console.log(root)
     initializeBreadcrumbTrail(root)
     createVisualization(root);
 }
@@ -274,7 +273,6 @@ function updateBreadcrumbs(nodeArray, percentageString) {
     d3.select("#trail")
         .style("visibility", "");
 
-    console.log(nodeArray)
     updateData(labels, values)
 
 }

@@ -249,8 +249,6 @@ var hideTooltip = function (d) {
 
 
 function selectBubble(name){
-    console.log(name)
-
     Array.from(document.getElementsByName(name)).forEach(element => {
        element.setAttribute("class", "bubbles-hover")
     });
@@ -260,7 +258,6 @@ function selectBubble(name){
 deselectBubble
 
 function deselectBubble(name){
-    console.log(name)
     Array.from(document.getElementsByName(name)).forEach(element => {
         element.setAttribute("class", "bubbles-left-hover")
     });

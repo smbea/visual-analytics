@@ -5,7 +5,6 @@ async function initMovieList(data) {
     if (data.length % 50 != 0) pagesNeeded += 1
     let lowerIndex = 0
     let higherIndex = 50
-    console.log(pagesNeeded)
 
     d3.select("#select")
         .on("change", dosmth)
@@ -80,7 +79,6 @@ function makeList(data) {
     let newdata = [...data]
     //newdata = newdata.splice(0, 100)
 
-    console.log(data)
     let card = d3.select("#movie-cards")
         .selectAll("div")
         .data(newdata)
